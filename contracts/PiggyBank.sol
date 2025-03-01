@@ -30,8 +30,9 @@ contract PiggyBank is Ownable {
         address _dai,
         address _developer,
         string memory _purpose,
-        uint256 _duration
-    ) Ownable(msg.sender) {  
+        uint256 _duration,
+        address _owner
+    ) Ownable(_owner) {  
         USDT_ADDRESS = _usdt;
         USDC_ADDRESS = _usdc;
         DAI_ADDRESS = _dai;
@@ -55,21 +56,26 @@ contract PiggyBank is Ownable {
         _;
     }
 
-    function deposit(address _token, uint256 _amount) external onlyAllowedToken(_token) notWithdrawn {
+    function deposit(address _token, uint256 _amount) external onlyAllowedToken(_token) notWithdrawn onlyOwner {
         require(_amount > 0, "Amount must be greater than 0");
+
+        address _owner = owner();
 
         IERC20 token = IERC20(_token);
-        require(token.transferFrom(msg.sender, address(this), _amount), "Transfer failed");
+        require(token.transferFrom(_owner, address(this), _amount), "Transfer failed");
 
-        savings[msg.sender][_token] += _amount;
+        savings[_owner][_token] += _amount;
         totalTokenDeposits[_token] += _amount;
 
-        emit Deposited(msg.sender, _token, _amount);
+        emit Deposited(_owner, _token, _amount);
     }
 
-    function withdraw(address _token, uint256 _amount) external onlyAllowedToken(_token) notWithdrawn {
+    function withdraw(address _token, uint256 _amount) external onlyAllowedToken(_token) notWithdrawn onlyOwner {
+
+        address _owner = owner();
+
         require(_amount > 0, "Amount must be greater than 0");
-        require(savings[msg.sender][_token] >= _amount, "Insufficient balance");
+        require(savings[_owner][_token] >= _amount, "Insufficient balance");
 
         bool isMature = block.timestamp >= startTime + duration;
         IERC20 token = IERC20(_token);
@@ -82,9 +88,9 @@ contract PiggyBank is Ownable {
             require(token.transfer(developer, penalty), "Penalty transfer failed");
         }
 
-        savings[msg.sender][_token] -= _amount;
+        savings[_owner][_token] -= _amount;
         totalTokenDeposits[_token] -= _amount;
-        require(token.transfer(msg.sender, amountToSend), "Withdrawal failed");
+        require(token.transfer(_owner, amountToSend), "Withdrawal failed");
 
        
         if (totalTokenDeposits[USDT_ADDRESS] == 0 &&
@@ -93,7 +99,7 @@ contract PiggyBank is Ownable {
             isWithdrawn = true;
         }
 
-        emit Withdrawn(msg.sender, _token, amountToSend, !isMature);
+        emit Withdrawn(_owner, _token, amountToSend, !isMature);
     }
 
     function getBalance(address _user, address _token) external view onlyAllowedToken(_token) returns (uint256) {

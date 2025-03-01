@@ -36,7 +36,8 @@ contract PiggyBankFactory {
                 DAI_ADDRESS,
                 developer,
                 _purpose,
-                _duration
+                _duration,
+                msg.sender
             )
         );
 
@@ -53,7 +54,8 @@ contract PiggyBankFactory {
             DAI_ADDRESS,
             developer,
             _purpose,
-            _duration
+            _duration,
+            msg.sender
         );
 
         address piggyBankAddr = address(piggyBank);
