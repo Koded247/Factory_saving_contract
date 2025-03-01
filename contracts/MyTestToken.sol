@@ -8,7 +8,7 @@ contract MyTestToken is ERC20 {
         _mint(msg.sender, initialSupply);
     }
 
-    // Optional: Add mint function for testing
+  
     function mint(address to, uint256 amount) external {
         _mint(to, amount);
     }

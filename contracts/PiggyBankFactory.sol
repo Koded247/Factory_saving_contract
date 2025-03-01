@@ -9,7 +9,7 @@ contract PiggyBankFactory {
     address public immutable DAI_ADDRESS;
     address public immutable developer;
 
-    mapping(address => address[]) public userPiggyBanks; // user => array of piggybank addresses
+    mapping(address => address[]) public userPiggyBanks; 
     event PiggyBankCreated(address indexed creator, address piggyBank, string purpose);
 
     constructor(

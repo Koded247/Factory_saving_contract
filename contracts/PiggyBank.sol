@@ -9,17 +9,17 @@ contract PiggyBank is Ownable {
     address public immutable USDT_ADDRESS;
     address public immutable USDC_ADDRESS;
     address public immutable DAI_ADDRESS;
-    address public immutable developer; // Where penalty fees go
+    address public immutable developer; 
 
     string public savingsPurpose;
-    uint256 public duration; // In seconds
+    uint256 public duration; 
     uint256 public startTime;
-    bool public isWithdrawn; // Tracks if funds are withdrawn
+    bool public isWithdrawn; 
 
-    mapping(address => mapping(address => uint256)) public savings; // user => token => amount
-    mapping(address => uint256) public totalTokenDeposits; // token => total
+    mapping(address => mapping(address => uint256)) public savings; 
+    mapping(address => uint256) public totalTokenDeposits; 
 
-    uint256 constant PENALTY_FEE = 15; // 15% penalty for early withdrawal
+    uint256 constant PENALTY_FEE = 15; 
 
     event Deposited(address indexed user, address indexed token, uint256 amount);
     event Withdrawn(address indexed user, address indexed token, uint256 amount, bool withPenalty);
@@ -31,7 +31,7 @@ contract PiggyBank is Ownable {
         address _developer,
         string memory _purpose,
         uint256 _duration
-    ) Ownable(msg.sender) {  // Explicitly call Ownable constructor with msg.sender
+    ) Ownable(msg.sender) {  
         USDT_ADDRESS = _usdt;
         USDC_ADDRESS = _usdc;
         DAI_ADDRESS = _dai;
@@ -76,7 +76,7 @@ contract PiggyBank is Ownable {
         uint256 amountToSend = _amount;
 
         if (!isMature) {
-            // Apply 15% penalty if withdrawing early
+           
             uint256 penalty = (_amount * PENALTY_FEE) / 100;
             amountToSend = _amount - penalty;
             require(token.transfer(developer, penalty), "Penalty transfer failed");
@@ -86,7 +86,7 @@ contract PiggyBank is Ownable {
         totalTokenDeposits[_token] -= _amount;
         require(token.transfer(msg.sender, amountToSend), "Withdrawal failed");
 
-        // If all funds are withdrawn, halt the contract
+       
         if (totalTokenDeposits[USDT_ADDRESS] == 0 &&
             totalTokenDeposits[USDC_ADDRESS] == 0 &&
             totalTokenDeposits[DAI_ADDRESS] == 0) {
