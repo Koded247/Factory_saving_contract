@@ -24,7 +24,7 @@ contract PiggyBankFactory {
         developer = _developer;
     }
 
-    // Deploy using CREATE2
+   
     function createPiggyBankWithCreate2(string memory _purpose, uint256 _duration, bytes32 _salt)
         external
         returns (address)
@@ -45,7 +45,7 @@ contract PiggyBankFactory {
         return piggyBankAddr;
     }
 
-    // Deploy using regular 'new' keyword
+  
     function createPiggyBank(string memory _purpose, uint256 _duration) external returns (address) {
         PiggyBank piggyBank = new PiggyBank(
             USDT_ADDRESS,
@@ -66,7 +66,7 @@ contract PiggyBankFactory {
         return userPiggyBanks[_user];
     }
 
-    // Predict CREATE2 address (optional utility)
+    
     function predictAddress(string memory _purpose, uint256 _duration, bytes32 _salt)
         public
         view
