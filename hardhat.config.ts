@@ -6,6 +6,10 @@ const { ALCHEMY_SEPOLIA_API_KEY_URL, ACCOUNT_PRIVATE_KEY, ETHERSCAN_API_KEY } = 
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
+  sourcify: {
+    enabled: true
+  },
+  
   networks: {
     sepolia: {
       url: ALCHEMY_SEPOLIA_API_KEY_URL,
